@@ -259,23 +259,26 @@ git clone https://github.com/pytorch/serve.git
   
   For more informations about [Script Mode](https://stackoverflow.com/questions/53900396/what-are-torch-scripts-in-pytorch)
   
-  In particularly, we save a model by torch.save that means you save the model in eager mode. To [archive a model](#14-archive-the-model-by-using-the-model-archiver) in eager model we need to create a python file containing model architecture and pass through the --model-file argument. 
+###  Eager mode:
 
-  To save a model in script mode, we can use two methods: torch.jit.trace or torch.jit.script. 
+   - In particularly, we save a model by torch.save that means you save the model in eager mode. 
   
-#### 1. Tracing a model:
+   - Like the way we did before to [archive a model](#14-archive-the-model-by-using-the-model-archiver) in eager model we need to create a python file containing model architecture and pass through the --model-file argument. 
+   
+   - To archive a custom model we need to save the model in script mode by using two methods: torch.jit.trace or torch.jit.script. 
+  
+### 1. Tracing a model:
 
  The way to convert from eager mode to script mode by torch.jit.trace: 
  
- Take an existing eager mode, and provide example inputs.
+ - Take an existing eager mode, and provide example inputs.
  
- The tracer runs the function, recording the tensorflow operations performed.
+ - The tracer runs the function, recording the tensorflow operations performed.
  
  We turn recording into a Script Module.
  
  - Can reuse eager model code.
  - Control-flow an data structures are ignored. (That means it doesn't work well with if statements or for loops).
- Tracing treats such flow control as "constant" - in other words, if you have an if model.training clause in your module and trace it with training=True, it will always behave this way, even if you change the training variable to False later on.
  
  Try to use torch.jit.trace [here](https://colab.research.google.com/drive/1m-FVJRgAwPycniqlKoNwQs0JvmZXRymq?usp=sharing).
 
