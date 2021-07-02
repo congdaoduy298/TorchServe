@@ -274,8 +274,21 @@ git clone https://github.com/pytorch/serve.git
  We turn recording into a Script Module.
  
  - Can reuse eager model code.
- - Control-flow an data structures are ignored. 
+ - Control-flow an data structures are ignored. (That means it doesn't work well with if statements or for loops).
+ Tracing treats such flow control as "constant" - in other words, if you have an if model.training clause in your module and trace it with training=True, it will always behave this way, even if you change the training variable to False later on.
  
  Try to use torch.jit.trace [here](https://colab.research.google.com/drive/1m-FVJRgAwPycniqlKoNwQs0JvmZXRymq?usp=sharing).
+
+### IV.REFERENCES
+
+
+
+ [TorchServe, công cụ hỗ trợ triển khai mô hình PyTorch.](https://viblo.asia/p/torchserve-cong-cu-ho-tro-trien-khai-mo-hinh-pytorch-vyDZOqwO5wj)
  
-  
+ [Model Serving on Pytorch.](https://github.com/pytorch/serve)
+ 
+ [TorchScript and PyTorch JIT | Deep Dive.](https://www.youtube.com/watch?v=2awmrMRf0dA)
+ 
+ [What are Torch Scripts in PyTorch?.](https://stackoverflow.com/questions/53900396/what-are-torch-scripts-in-pytorch)
+ 
+ 
