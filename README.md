@@ -85,13 +85,18 @@ git clone https://github.com/pytorch/serve.git
      ```bash
      pip install -U grpcio protobuf grpcio-tools
      ```
+   - Change directory to the *serve* directory :
+   
+     ```bash
+     cd serve
+     ```
    - Generate inference client using proto files
    
      ```bash
      python -m grpc_tools.protoc --proto_path=frontend/server/src/main/resources/proto/ --python_out=ts_scripts --grpc_python_out=ts_scripts   
      frontend/server/src/main/resources/proto/inference.proto frontend/server/src/main/resources/proto/management.proto
      ```
-   - Run inference using a sample client [gRPC python client](ts_scripts/torchserve_grpc_client.py)
+   - Run inference using a sample client [gRPC python client](https://github.com/pytorch/serve/blob/master/ts_scripts/torchserve_grpc_client.py)
    
      Note: Remember to [Start TorchServe](#15-start-torchserve-to-serve-the-model) before running this command. 
    
@@ -122,9 +127,18 @@ git clone https://github.com/pytorch/serve.git
  ##### 1.7 Deploy multi model
  
  ##### Add new model when server is working
+  
  
  1.7.1 Register a model
- 
+   ###### FOR gRPC API
+    
+   ```bash
+     python ts_scripts/torchserve_grpc_client.py register squeezenet1_1
+   ```
+   By example code we only can use some pretrained model. 
+   
+   ###### FOR REST API
+   
    Create a mar file of the second model store in the *model_store* folder. And set several workers for the second model.  
    
    Example: If we have a *squeezenet1_1.mar* in *model_store*. Use this following code: 
