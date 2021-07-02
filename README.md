@@ -247,7 +247,7 @@ git clone https://github.com/pytorch/serve.git
             model1=model1.mar, model2=model2.mar: Load models with the specified names and MAR files from model_store.
   ```
   
-### III.TWO MODE OF TORCH MODEL
+### III.CONVERT TO SCRIPT MODE
   
   
   A PyTorch model has two mode. There are Eager Mode and Script Mode. 
@@ -259,5 +259,23 @@ git clone https://github.com/pytorch/serve.git
   
   For more informations about [Script Mode](https://stackoverflow.com/questions/53900396/what-are-torch-scripts-in-pytorch)
   
-  In particularly, we save a model by torch.save that means you save the model in eager mode. To [archive a model](14-archive-the-model-by-using-the-model-archiver) in eager model we need to create a model class in python script and pass to the --model-file argument. 
+  In particularly, we save a model by torch.save that means you save the model in eager mode. To [archive a model](#14-archive-the-model-by-using-the-model-archiver) in eager model we need to create a python file containing model architecture and pass through the --model-file argument. 
 
+  To save a model in script mode, we can use two methods: torch.jit.trace or torch.jit.script. 
+  
+#### 1. Tracing a model:
+
+ The way to convert from eager mode to script mode by torch.jit.trace: 
+ 
+ Take an existing eager mode, and provide example inputs.
+ 
+ The tracer runs the function, recording the tensorflow operations performed.
+ 
+ We turn recording into a Script Module.
+ 
+ - Can reuse eager model code.
+ - Control-flow an data structures are ignored. 
+ 
+ Try to use torch.jit.trace [here](https://colab.research.google.com/drive/1m-FVJRgAwPycniqlKoNwQs0JvmZXRymq?usp=sharing).
+ 
+  
