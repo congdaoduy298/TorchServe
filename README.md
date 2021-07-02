@@ -93,7 +93,7 @@ git clone https://github.com/pytorch/serve.git
      ```
    - Run inference using a sample client [gRPC python client](ts_scripts/torchserve_grpc_client.py)
    
-     Note: Remember to [Start TorchServe](#start-torchserve-to-serve-the-model) before running this command. 
+     Note: Remember to [Start TorchServe](#15-start-torchserve-to-serve-the-model) before running this command. 
    
      ```bash
      python ts_scripts/torchserve_grpc_client.py infer densenet161 examples/image_classifier/kitten.jpg
