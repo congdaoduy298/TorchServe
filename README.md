@@ -4,6 +4,11 @@ This Document For Debian Based Systems/ MacOS
 
 For Windows follow the document from [torchserve](https://github.com/pytorch/serve#install-torchserve-and-torch-model-archiver)
 
+## Contents of this Document
+
+* [Install TorchServe](#installation)
+* [Serve a Model](#serve-a-model)
+
 ## I. Installation
  1. Clone TorchServe repository
 ```shell
@@ -87,7 +92,9 @@ git clone https://github.com/pytorch/serve.git
      frontend/server/src/main/resources/proto/inference.proto frontend/server/src/main/resources/proto/management.proto
      ```
    - Run inference using a sample client [gRPC python client](ts_scripts/torchserve_grpc_client.py)
-   - 
+   
+     Note: Remember to [Start TorchServe](#start-torchserve-to-serve-the-model) before running this command. 
+   
      ```bash
      python ts_scripts/torchserve_grpc_client.py infer densenet161 examples/image_classifier/kitten.jpg
      ```
@@ -112,3 +119,108 @@ git clone https://github.com/pytorch/serve.git
      python send_request.py
      ```
    
+ ##### 1.7 Deploy multi model
+ 
+ ##### Add new model when server is working
+ 
+ 1.7.1 Register a model
+ 
+   Create a mar file of the second model store in the *model_store* folder. And set several workers for the second model.  
+   
+   Example: If we have a *squeezenet1_1.mar* in *model_store*. Use this following code: 
+   
+   ```bash
+   curl -v -X POST "http://localhost:8081/models?initial_workers=1&url=squeezenet1_1.mar"
+   ```
+  
+  Or you can download a pretrained model from Torch Serve.
+  
+  ```bash
+  curl -v -X POST "http://localhost:8081/models?initial_workers=1&url=https://torchserve.pytorch.org/mar_files/squeezenet1_1.mar"
+  ```
+  
+  If you want to update a new version of model (example version 1.1):
+  
+  ```bash
+  curl -v -X POST "http://localhost:8081/models?initial_workers=1&url=squeezenet1_1.mar/1.1"
+  ```
+  
+
+  
+###### Parameters
+```
+ url: Load a model archive. Supports the following locations:
+
+    a local model archive (.mar); the file must be in the model_store folder (and not in a subfolder).
+
+    a URI using the HTTP(s) protocol. TorchServe can download .mar files from the Internet.
+
+
+ model_name: Name of a mar model file.
+
+
+ handler: Make sure that the given handler is in the PYTHONPATH. Format: module_name: method_name
+
+
+ runtime: The runtime for the model custom service code. Default PYTHON
+
+
+ batch_size: The inference batch size.  Default 1
+
+
+ max_batch_delay: This is the maximum batch delay time TorchServe waits to receive batch_size number of requests. 
+                  Default 100 ms
+
+
+ initial_workers: The number of initial workers to create. 
+                  TorchServe will not run inference when initial_workers=0. Default 0
+
+
+ synchronous: Whether or not the creation of worker is synchronous. Default false
+
+
+ response_timeout: Timeout, in seconds, maximum time for model’s backend workers process a request. 
+                   Raise Error 500 if no response. Default 120 s
+```
+  1.7.2 Cancel a model registration.
+ 
+ ```bash
+ curl -X DELETE http://localhost:8081/models/squeezenet1_1/1.0
+ ```
+ 
+##### Add multiple models by torchserve command
+
+  Use torchsever --stop if the server is running. After that run this command.
+  
+  ```
+  torchserve --start --ncs --model-store model_store --models model1 model2 
+  ```
+###### Arguments
+
+  ```
+  --start               Start the model-server
+  
+
+  --stop                Stop the model-server
+
+
+  --ts-config TS_CONFIG
+                        Configuration file for model server
+
+
+  --no-config-snapshots, --ncs
+                        Prevents to server from storing config snapshot files.
+
+
+  --models              Load models. There are some options:
+
+            standalone: default: N/A, No models are loaded at start up.
+
+            all: Load all models present in model_store.
+
+            model1.mar, model2.mar: Load models in the specified MAR files from model_store.
+
+            model1=model1.mar, model2=model2.mar: Load models with the specified names and MAR files from model_store.
+  ```
+  
+
