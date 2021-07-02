@@ -8,6 +8,7 @@ For Windows follow the document from [torchserve](https://github.com/pytorch/ser
 
 * [Install TorchServe](#installation)
 * [Serve a Model](#serve-a-model)
+* [Two mode of Torch Model](#two-mode-of-torch-model)
 
 ## I. Installation
  1. Clone TorchServe repository
@@ -71,6 +72,8 @@ git clone https://github.com/pytorch/serve.git
 
    ```
    [Here](https://github.com/pytorch/serve/blob/master/model-archiver/README.md) for more informations about arguments.
+   
+   ###### Note: Pytorch model include 2 mode: eager mode and script mode. To know more about mode in Pytorch click [here]()
   
   ##### 1.5 Start TorchServe to serve the model
   ```bash
@@ -118,7 +121,7 @@ git clone https://github.com/pytorch/serve.git
      curl http://127.0.0.1:8080/predictions/densenet161 -T kitten_small.jpg
      ```
    
-   - The other way, we implement a python script to get prediction:
+   - The other way, we implement [a python script](send_request.py) to get a prediction:
    
      ```bash
      python send_request.py
@@ -244,4 +247,17 @@ git clone https://github.com/pytorch/serve.git
             model1=model1.mar, model2=model2.mar: Load models with the specified names and MAR files from model_store.
   ```
   
+### III.TWO MODE OF TORCH MODEL
+  
+  
+  A PyTorch model has two mode. There are Eager Mode and Script Mode. 
+  
+  A short explanation about those is Eager Mode always use for training model, and Script Mode use for production. Script Mode helps model portability and more 
+  performance. See the image below.
+  
+  ![Torch Mode](images/TorchMode.png)
+  
+  For more informations about [Script Mode](https://stackoverflow.com/questions/53900396/what-are-torch-scripts-in-pytorch)
+  
+  In particularly, we save a model by torch.save that means you save the model in eager mode. To [archive a model](14-archive-the-model-by-using-the-model-archiver) in eager model we need to create a model class in python script and pass to the --model-file argument. 
 
