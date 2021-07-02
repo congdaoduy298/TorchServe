@@ -197,10 +197,17 @@ git clone https://github.com/pytorch/serve.git
                    Raise Error 500 if no response. Default 120 s
 ```
   1.7.2 Cancel a model registration.
- 
- ```bash
- curl -X DELETE http://localhost:8081/models/squeezenet1_1/1.0
- ```
+
+   ###### FOR gRPC API
+    
+   ```bash
+     python ts_scripts/torchserve_grpc_client.py unregister squeezenet1_1
+   ```
+   ###### FOR REST API
+
+   ```bash
+   curl -X DELETE http://localhost:8081/models/squeezenet1_1/1.0
+   ```
  
 ##### Add multiple models by torchserve command
 
