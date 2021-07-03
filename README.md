@@ -8,7 +8,10 @@ For Windows follow the document from [torchserve](https://github.com/pytorch/ser
 
 * [Install TorchServe](#installation)
 * [Serve a Model](#serve-a-model)
-* [Two mode of Torch Model](#two-mode-of-torch-model)
+* [Logging and Monitoring](#logging-and-monitoring)
+* [Convert to Script Mode] (#convert-to-script-mode)
+* [Serve YOLOv5 Model] (#serve-yolov5-model)
+* [References] (#references)
 
 ## I. Installation
  1. Clone TorchServe repository
@@ -320,7 +323,7 @@ Types of metrics
  
  [Here](https://pytorch.org/serve/metrics.html#custom-metrics-api) for more informations about custom metrics.
 
-### III.CONVERT TO SCRIPT MODE
+### IV.CONVERT TO SCRIPT MODE
   
   
   A PyTorch model has two mode. There are Eager Mode and Script Mode. 
@@ -329,6 +332,8 @@ Types of metrics
   performance. See the image below.
   
   ![Torch Mode](images/TorchMode.png)
+  
+  We can check what mode your model is by print *model.graph*. Only a scripted model has a graph, a eager model will raise an error.
   
   For more informations about [Script Mode](https://stackoverflow.com/questions/53900396/what-are-torch-scripts-in-pytorch)
   
@@ -351,13 +356,25 @@ Types of metrics
  We turn recording into a Script Module.
  
  - Can reuse eager model code.
+ 
  - Control-flow an data structures are ignored. (That means it doesn't work well with if statements or for loops).
  
- Try to use torch.jit.trace [here](https://colab.research.google.com/drive/1m-FVJRgAwPycniqlKoNwQs0JvmZXRymq?usp=sharing).
+### 2. Script a model:
 
-### IV.REFERENCES
+Pass instance of your model to torch.jit.script().
+
+- Control-flow is preserved.
+
+- *print* statement can be used for debugging.
+
+- Remove the script() call to debug as a standard PyTorch module.
+
+ Try to use torch.jit.trace and torch.jit.script  [here](https://colab.research.google.com/drive/1ihTRSsu6e33sU3m_WZ7YtB9MPjUaCLtA?usp=sharing).
+
+### V.SERVE YOLOv5 MODEL
 
 
+### VI.REFERENCES
 
  [TorchServe, công cụ hỗ trợ triển khai mô hình PyTorch.](https://viblo.asia/p/torchserve-cong-cu-ho-tro-trien-khai-mo-hinh-pytorch-vyDZOqwO5wj)
  
