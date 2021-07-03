@@ -292,9 +292,9 @@ The following logs are collected into the ts_log.log (We load 2 worker for model
     
 #### Note: 
 
- - If you want to fix bugs from model, you just have to care about *model_log.log* file. Or if you want to check connections from requests to server, you need to care about *access_log.log*.  
+ - If you want to fix bugs from model, you just have to care about *model_log.log* file. Or if you want to check connections from requests to server, you only care about *access_log.log*.  
  
- - To debug python script, we can write to model_log.log by using *logging.warning* . 
+ - To debug python script, we can use *logging.warning* and these logs will be show on *model_log.log* file.
 
 ## IV. METRICS
 
