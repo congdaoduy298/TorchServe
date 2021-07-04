@@ -66,22 +66,22 @@ $ git clone https://github.com/pytorch/serve.git
  
 ## II. Serve a model
 ### 1. Run an example from github
-   ##### 1.1 Change to the parent directory of the *serve* directory
+   #### 1.1 Change to the parent directory of the *serve* directory
    
    ```bash
    $ cd ..
    ```
-   ##### 1.2 Create a folder to store your models
+   #### 1.2 Create a folder to store your models
    
    ```bash
    $ mkdir model_store
    ```
-   ##### 1.3 Download a trained model
+   #### 1.3 Download a trained model
    
    ```bash
    $ wget https://download.pytorch.org/models/densenet161-8d451a50.pth
    ```
-   ##### 1.4 Archive the model by using the model archiver.
+   #### 1.4 Archive the model by using the model archiver.
    
    ```bash
    $ torch-model-archiver --model-name densenet161 --version 1.0 --model-file ./serve/examples/image_classifier/densenet_161/model.py --serialized-file densenet161-8d451a50.pth --export-path model_store --extra-files ./serve/examples/image_classifier/index_to_name.json --handler image_classifier
@@ -89,9 +89,9 @@ $ git clone https://github.com/pytorch/serve.git
    ```
    [Here](https://github.com/pytorch/serve/blob/master/model-archiver/README.md) for more informations about arguments.
    
-   ###### Note: Pytorch model include 2 mode: eager mode and script mode. To know more about mode in Pytorch click [here]()
+   ##### Note: Pytorch model include 2 mode: eager mode and script mode. To know more about mode in Pytorch click [here]()
   
-  ##### 1.5 Start TorchServe to serve the model
+  #### 1.5 Start TorchServe to serve the model
   
   The defaul port of Inference REST API - 8080, Management REST API - 8081, Metrics REST API - 8082.
                      Inference gRPC API - 7070, Management gRPC API - 7071.
@@ -109,7 +109,7 @@ $ git clone https://github.com/pytorch/serve.git
   ```bash
   $ torchserve --start --ncs --model-store model_store --models densenet161.mar
   ```
-  ##### 1.6 Get predictions from a model
+  #### 1.6 Get predictions from a model
   
   1.6.1 Using GRPC APIs through python client
      
@@ -158,20 +158,20 @@ $ git clone https://github.com/pytorch/serve.git
      $ python send_request.py
      ```
    
- ##### 1.7 Deploy multi model
+ #### 1.7 Deploy multi model
  
  ##### Add new model when server is working
   
  
  1.7.1 Register a model
-   ###### FOR gRPC API
+   ##### FOR gRPC API
     
    ```bash
    $ python ts_scripts/torchserve_grpc_client.py register squeezenet1_1
    ```
    By example code we only can use some pretrained model. 
    
-   ###### FOR REST API
+   ##### FOR REST API
    
    Create a mar file of the second model store in the *model_store* folder. And set several workers for the second model.  
    
@@ -232,12 +232,12 @@ $ git clone https://github.com/pytorch/serve.git
 ```
   1.7.2 Cancel a model registration.
 
-   ###### FOR gRPC API
+   ##### FOR gRPC API
     
    ```bash
    $ python ts_scripts/torchserve_grpc_client.py unregister squeezenet1_1
    ```
-   ###### FOR REST API
+   ##### FOR REST API
 
    ```bash
    $ curl -X DELETE http://localhost:8081/models/squeezenet1_1/1.0
@@ -405,21 +405,21 @@ I am going to test on pretrained yolov5s.
 
 Don't foget to install [Torch Serve](#installation) first.
 
-### 1 Clone this repo: 
+### 1. Clone this repo: 
 
-- Clone this repo to get Yolov5 weights and file index_to_nam.json and torchserve_handler.py (This python file controls preprocessing, passes Tensor through model and get predictions).
+- Clone this repo to get Yolov5 weights and file index_to_name.json and torchserve_handler.py (This python file controls preprocessing, passes Tensor through model and get predictions).
 
 ```bash
 $ git clone https://github.com/congdaoduy298/TorchServe.git
 ```
 
-### 2 Change current directory to yolov5_torchserve:
+### 2. Change current directory to yolov5_torchserve:
 
 ```bash
 $ cd TorchServe/yolov5_torchserve 
 ```
 
-### 3 Clone lastest version of yolov5 repository and install all requirements.
+### 3. Clone lastest version of yolov5 repository and install all requirements.
 
 ```bash
 $ git clone https://github.com/ultralytics/yolov5
@@ -427,7 +427,7 @@ $ cd yolov5
 $ pip install -r requirements.txt
 ```
 
-### 4 Convert the eager yolov5 model to the script model:
+### 4. Convert the eager yolov5 model to the script model:
 
 ```bash
 $ cd ..
@@ -438,7 +438,7 @@ $ python3 yolov5/export.py --weights yolov5s.pt --img 640 --batch 1
 ```
 Now, we can see a yolov5s.torchscript.pt has been created in yolov5_torchserve folder.
 
-### 5 Archive the model by using the model archiver.
+### 5. Archive the model by using the model archiver.
 
  Create model_store to save archived model. 
  
@@ -451,7 +451,7 @@ torch-model-archiver --model-name yolov5s     --version 0.1 --serialized-file yo
 ```
 yolov5s.mar will be exported in model_store folder.
 
-### 6 Start TorchServe to serve the model and get predictions.
+### 6. Start TorchServe to serve the model and get predictions.
   
   Before we start TorchServe, try to add yolov5 path to PYTHONPATH. It makes us can import all codes in yolov5 (In this case, I use letterbox function from utils.datasets).
   
