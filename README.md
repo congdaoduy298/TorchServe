@@ -12,7 +12,8 @@ For Windows follow the document from [torchserve](https://github.com/pytorch/ser
 * [Metrics](#iv-metrics)
 * [Convert to Script Mode](#v-convert-to-script-mode)
 * [Serve YOLOv5 Model](#vi-serve-yolov5-model)
-* [References](#vii-references)
+* [Common Bugs](#vii-common-bugs)
+* [References](#viii-references)
 
 ## I. Installation
  1. Clone TorchServe repository
@@ -104,7 +105,7 @@ $ git clone https://github.com/pytorch/serve.git
   
   Torch Serve will load configurations from file config.properties where you run tochserve.
   
-  For more [Advanced Configuration](https://pytorch.org/serve/configuration.html)
+  For more [Advanced Configuration](Advanced_Configuration.md)
   
   ```bash
   $ torchserve --start --ncs --model-store model_store --models densenet161.mar
@@ -351,7 +352,7 @@ Types of metrics
  
  [Here](https://pytorch.org/serve/metrics.html#custom-metrics-api) for more informations about custom metrics.
 
-## V.CONVERT TO SCRIPT MODE
+## V. CONVERT TO SCRIPT MODE
   
   
   A PyTorch model has two mode. There are Eager Mode and Script Mode. 
@@ -465,8 +466,51 @@ yolov5s.mar will be exported in model_store folder.
   ``` 
  [Start TorchServe and get predictions just like the steps before.](#15-start-torchserve-to-serve-the-model)
 
+## VII. COMMON BUGS 
 
-## VII. REFERENCES
+### 1. Fix Port already in use anydesk port 7070 
+
+Configure TorchServe gRPC listening ports
+
+The inference gRPC API is listening on port 7070, and the management gRPC API is listening on port 7071 by default.
+
+To configure different ports use following properties
+
+```
+grpc_inference_port: Inference gRPC API binding port. Default: 7070
+grpc_management_port: management gRPC API binding port. Default: 7071
+```
+
+Here are a couple of examples:
+
+```
+grpc_inference_port=8888
+grpc_management_port=9999
+```
+
+Save to config.properties in /home/my_path if you cloned the repository into /home/my_path/serve.
+
+### 2. Fix ServiceUnavailableException 503 access logging.
+
+It happens when the server is busy. Worker has tasks to do.
+
+Increase job queue size. 
+
+In file *config.properties* we add job_queue_size=num_job.
+
+Example: job_queue_size = 100 (add maximum 100 jobs in queue when server is busy).
+
+=> Maximum number of task at a specific time = default_workers_per_model + job_queue_size
+
+### 3. Fix Internal Server Error 500 access logging.
+
+It means Response Time Out. The way to solve this problem:
+
+Solution: Set bigger value for respone time out.
+    
+Example: default_response_timeout = 180 (Default 120s)
+
+## VIII. REFERENCES
 
  [TorchServe, công cụ hỗ trợ triển khai mô hình PyTorch.](https://viblo.asia/p/torchserve-cong-cu-ho-tro-trien-khai-mo-hinh-pytorch-vyDZOqwO5wj)
  
@@ -478,3 +522,4 @@ yolov5s.mar will be exported in model_store folder.
  
  [Yolov5 running on TorchServe.](https://github.com/louisoutin/yolov5_torchserve)
  
+ [Advanced Configuration](https://pytorch.org/serve/configuration.html)
