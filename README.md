@@ -65,7 +65,7 @@ $ git clone https://github.com/pytorch/serve.git
 ### Install TorchServe for development at [here](https://github.com/pytorch/serve#install-torchserve-for-development)
  
 ## II. Serve a model
-#### 1. Run an example from github
+### 1. Run an example from github
    ##### 1.1 Change to the parent directory of the *serve* directory
    
    ```bash
@@ -92,6 +92,20 @@ $ git clone https://github.com/pytorch/serve.git
    ###### Note: Pytorch model include 2 mode: eager mode and script mode. To know more about mode in Pytorch click [here]()
   
   ##### 1.5 Start TorchServe to serve the model
+  
+  The defaul port of Inference REST API - 8080, Management REST API - 8081, Metrics REST API - 8082.
+                     Inference gRPC API - 7070, Management gRPC API - 7071.
+                     
+  In my case, port 7070 is already used by AnyDesk. So I have to configure gRPC port:
+  
+  ```bash
+  $ echo "grpc_inference_port=8888" > config.properties
+  ```
+  
+  Torch Serve will load configurations from file config.properties where you run tochserve.
+  
+  For more [Advanced Configuration](https://pytorch.org/serve/configuration.html)
+  
   ```bash
   $ torchserve --start --ncs --model-store model_store --models densenet161.mar
   ```
@@ -117,7 +131,8 @@ $ git clone https://github.com/pytorch/serve.git
      ```
    - Run inference using a sample client [gRPC python client](https://github.com/pytorch/serve/blob/master/ts_scripts/torchserve_grpc_client.py)
    
-     Note: Remember to [Start TorchServe](#15-start-torchserve-to-serve-the-model) before running this command. 
+     ##### Note: 
+     Remember to [Start TorchServe](#15-start-torchserve-to-serve-the-model) before running this command. Change inference port from 7070 to 8888 if you set *grpc_inference_port=8888* in line 9 of *torchserve_grpc_client.py*.
    
      ```bash
      $ python ts_scripts/torchserve_grpc_client.py infer densenet161 examples/image_classifier/kitten.jpg
@@ -390,7 +405,7 @@ I am going to test on pretrained yolov5s.
 
 Don't foget to install [Torch Serve](#installation) first.
 
-1. Clone this repo: 
+### 1 Clone this repo: 
 
 - Clone this repo to get Yolov5 weights and file index_to_nam.json and torchserve_handler.py (This python file controls preprocessing, passes Tensor through model and get predictions).
 
@@ -398,13 +413,13 @@ Don't foget to install [Torch Serve](#installation) first.
 $ git clone https://github.com/congdaoduy298/TorchServe.git
 ```
 
-2. Change current directory to yolov5_torchserve:
+### 2 Change current directory to yolov5_torchserve:
 
 ```bash
 $ cd TorchServe/yolov5_torchserve 
 ```
 
-3. Clone lastest version of yolov5 repository and install all requirements.
+### 3 Clone lastest version of yolov5 repository and install all requirements.
 
 ```bash
 $ git clone https://github.com/ultralytics/yolov5
@@ -412,7 +427,7 @@ $ cd yolov5
 $ pip install -r requirements.txt
 ```
 
-4. Convert the eager yolov5 model to the script model:
+### 4 Convert the eager yolov5 model to the script model:
 
 ```bash
 $ cd ..
@@ -423,35 +438,32 @@ $ python3 yolov5/export.py --weights yolov5s.pt --img 640 --batch 1
 ```
 Now, we can see a yolov5s.torchscript.pt has been created in yolov5_torchserve folder.
 
-5. Archive the model by using the model archiver.
+### 5 Archive the model by using the model archiver.
 
  Create model_store to save archived model. 
  
 ```bash
 $ mkdir model_store 
 ```
+
 ```bash
 torch-model-archiver --model-name yolov5s     --version 0.1 --serialized-file yolov5s.torchscript.pt     --export-path model_store --handler torchserve_handler.py     --extra-files index_to_name.json -f
 ```
 yolov5s.mar will be exported in model_store folder.
 
-6. Start TorchServe to serve the model
+### 6 Start TorchServe to serve the model and get predictions.
   
   Before we start TorchServe, try to add yolov5 path to PYTHONPATH. It makes us can import all codes in yolov5 (In this case, I use letterbox function from utils.datasets).
   
   ```bash
-  export PYTHONPATH=$PYTHONPATH:/[YOUR PATH TO YOLOV5] 
+  $ export PYTHONPATH=$PYTHONPATH:/[YOUR PATH TO YOLOV5] 
   ``` 
   Example:
   
    ```bash
-  export PYTHONPATH=$PYTHONPATH://home/congdao/user/TorchServe/yolov5_torchserve/yolov5 
+  $ export PYTHONPATH=$PYTHONPATH:/home/user/Desktop/TorchServe/yolov5_torchserve/yolov5 
   ``` 
-  
-  Start TorchServe
-  ```bash
-  $ torchserve --start --ncs --model-store model_store --models yolov5s
-  ```
+ [Start TorchServe and get predictions just like the steps before.](#15-start-torchserve-to-serve-the-model)
 
 
 ## VII. REFERENCES
@@ -464,4 +476,5 @@ yolov5s.mar will be exported in model_store folder.
  
  [What are Torch Scripts in PyTorch?.](https://stackoverflow.com/questions/53900396/what-are-torch-scripts-in-pytorch)
  
+ [Yolov5 running on TorchServe.](https://github.com/louisoutin/yolov5_torchserve)
  
