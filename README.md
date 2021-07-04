@@ -6,13 +6,13 @@ For Windows follow the document from [torchserve](https://github.com/pytorch/ser
 
 ## Contents of this Document
 
-* [Install TorchServe](#installation)
-* [Serve a Model](#serve-a-model)
-* [Logging and Monitoring](#logging-and-monitoring)
-* [Metrics](#metrics)
-* [Convert to Script Mode](#convert-to-script-mode)
-* [Serve YOLOv5 Model](#serve-yolov5-model)
-* [References](#references)
+* [Install TorchServe](#i-installation)
+* [Serve a Model](#ii-serve-a-model)
+* [Logging and Monitoring](#iii-logging-and-monitoring)
+* [Metrics](#iv-metrics)
+* [Convert to Script Mode](#v-convert-to-script-mode)
+* [Serve YOLOv5 Model](#vi-serve-yolov5-model)
+* [References](#vii-references)
 
 ## I. Installation
  1. Clone TorchServe repository
