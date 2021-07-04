@@ -138,6 +138,8 @@ eg: to set *inference_address* property run cmd or terminal
 export TS_INFERENCE_ADDRESS="http://127.0.0.1:8082".
 ```
 
+
+```
 default_workers_per_model: Number of workers to create for each model that is loaded at startup time. Default: available CPUs/GPUs in system. (If it is set to 0, the number of workers is still the number of available CPUs/GPUs in the system).
 
 job_queue_size: Number inference jobs that frontend will queue before backend can serve. Default: 100. (Number requests at a time is num_workers + job_queue_size).
@@ -154,3 +156,4 @@ max_request_size : The maximum allowable request size that the Torchserve accept
 
 max_response_size : The maximum allowable response size that the Torchserve sends, in bytes. Default: 6553500
 ```
+For more in formations [here](https://pytorch.org/serve/configuration.html)
