@@ -8,7 +8,10 @@ For Windows follow the document from [torchserve](https://github.com/pytorch/ser
 
 * [Install TorchServe](#installation)
 * [Serve a Model](#serve-a-model)
-* [Two mode of Torch Model](#two-mode-of-torch-model)
+* [Logging and Monitoring](#logging-and-monitoring)
+* [Convert to Script Mode] (#convert-to-script-mode)
+* [Serve YOLOv5 Model] (#serve-yolov5-model)
+* [References] (#references)
 
 ## I. Installation
  1. Clone TorchServe repository
@@ -247,7 +250,80 @@ git clone https://github.com/pytorch/serve.git
             model1=model1.mar, model2=model2.mar: Load models with the specified names and MAR files from model_store.
   ```
   
-### III.CONVERT TO SCRIPT MODE
+## III. Logging and Monitoring
+
+#### Types of logs
+
+TorchServe currently provides the following types of logs
+
+   - Access logs
+   
+   - TorchServe logs
+
+### 1.Access Logs:
+
+- When you load TorchServe with a model and run inference against the server, the following logs are collected into the access_log.log:
+
+  ```
+   2018-10-15 13:56:18,976 [INFO ] BackendWorker-9000 ACCESS_LOG - /127.0.0.1:64003 "POST /predictions/resnet-18 HTTP/1.1" 200 118
+   ```
+
+-The above log tells us that a successful POST call to /predictions/resnet-18 was made by remote host 127.0.0.1:64003 it took 118ms to complete this request.
+
+### 2.TorchServe Logs:
+
+- These logs collect all the logs from TorchServe and from the backend workers (the custom model code).
+
+The following logs are collected into the ts_log.log (We load 2 worker for model *my_model_name*):
+
+``` 
+2021-07-02 13:04:51,816 [DEBUG] W-9000-my_model_name_0.1 org.pytorch.serve.wlm.WorkerThread - W-9000-my_model_name_0.1 State change WORKER_STARTED -> WORKER_MODEL_LOADED
+2021-07-02 13:04:51,829 [INFO ] W-9001-my_model_name_0.1 org.pytorch.serve.wlm.WorkerThread - Backend response time: 1864
+2021-07-02 13:04:51,829 [DEBUG] W-9001-my_model_name_0.1 org.pytorch.serve.wlm.WorkerThread - W-9001-my_model_name_0.1 State change WORKER_STARTED -> WORKER_MODEL_LOADED
+2021-07-02 13:05:58,061 [INFO ] W-9000-my_model_name_0.1 org.pytorch.serve.wlm.WorkerThread - Backend response time: 8467
+2021-07-02 13:05:58,181 [DEBUG] W-9000-my_model_name_0.1 org.pytorch.serve.job.Job - Waiting time ns: 122486975, Backend time ns: 8589969943
+```
+
+### 3.Model Logs:
+
+- To debug your python code or model load failed, we can check logs from model_log.log. Example: 
+   ```
+    2021-06-29 22:55:24,443 [INFO ] W-9003-my_model_name_1_0.1-stdout MODEL_LOG -   File "/home/congdao/Desktop/TorchServe-REST/yolov5_torchserve_v2/yolov5  /torchserve_handler.py", line 4, in <module>
+    2021-06-29 22:55:24,444 [INFO ] W-9003-my_model_name_1_0.1-stdout MODEL_LOG -     from utils2.datasets import letterbox
+    2021-06-29 22:55:24,447 [INFO ] W-9003-my_model_name_1_0.1-stdout MODEL_LOG - ModuleNotFoundError: No module named 'utils2'
+    ```
+    
+#### Note: 
+
+ - If you want to fix bugs from model, you just have to care about *model_log.log* file. Or if you want to check connections from requests to server, you only care about *access_log.log*.  
+ 
+ - To debug python script, we can use *logging.warning* and these logs will be show on *model_log.log* file.
+
+## IV. METRICS
+
+Types of metrics
+
+  - System metrics - log_directory/ts_metrics.log
+
+  - Custom metrics - log directory/model_metrics.log
+   
+#### 1.System metrics:
+
+ ![Sytem Metrics](images/SystemMetrics.png)
+ 
+ TorchServe emits metrics to log files by default. To enable JSON formatting for metrics, change the following line in log4j.properties:
+ 
+ ```bash
+ log4j.appender.ts_metrics.layout = org.pytorch.serve.util.logging.JSONLayout
+ ```
+ 
+#### 2. Custom metrics:
+ 
+ We can Create dimension object(s), Add generic metrics, Add time-based metrics, Add size-based metrics, Add Percentage based metrics, Add counter-based metrics.
+ 
+ [Here](https://pytorch.org/serve/metrics.html#custom-metrics-api) for more informations about custom metrics.
+
+### IV.CONVERT TO SCRIPT MODE
   
   
   A PyTorch model has two mode. There are Eager Mode and Script Mode. 
@@ -256,6 +332,8 @@ git clone https://github.com/pytorch/serve.git
   performance. See the image below.
   
   ![Torch Mode](images/TorchMode.png)
+  
+  We can check what mode your model is by print *model.graph*. Only a scripted model has a graph, a eager model will raise an error.
   
   For more informations about [Script Mode](https://stackoverflow.com/questions/53900396/what-are-torch-scripts-in-pytorch)
   
@@ -278,13 +356,25 @@ git clone https://github.com/pytorch/serve.git
  We turn recording into a Script Module.
  
  - Can reuse eager model code.
+ 
  - Control-flow an data structures are ignored. (That means it doesn't work well with if statements or for loops).
  
- Try to use torch.jit.trace [here](https://colab.research.google.com/drive/1m-FVJRgAwPycniqlKoNwQs0JvmZXRymq?usp=sharing).
+### 2. Script a model:
 
-### IV.REFERENCES
+Pass instance of your model to torch.jit.script().
+
+- Control-flow is preserved.
+
+- *print* statement can be used for debugging.
+
+- Remove the script() call to debug as a standard PyTorch module.
+
+ Try to use torch.jit.trace and torch.jit.script  [here](https://colab.research.google.com/drive/1ihTRSsu6e33sU3m_WZ7YtB9MPjUaCLtA?usp=sharing).
+
+### V.SERVE YOLOv5 MODEL
 
 
+### VI.REFERENCES
 
  [TorchServe, công cụ hỗ trợ triển khai mô hình PyTorch.](https://viblo.asia/p/torchserve-cong-cu-ho-tro-trien-khai-mo-hinh-pytorch-vyDZOqwO5wj)
  
