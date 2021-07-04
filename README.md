@@ -50,6 +50,18 @@ $ git clone https://github.com/pytorch/serve.git
    ```
    $ pip install torchserve torch-model-archiver torch-workflow-archiver
    ```
+   
+   #### NOTE: 
+   If this command raise a warning that these library is not in PATH looks like the following warning. 
+   
+   ```
+   WARNING: The script torchserve is installed in '/home/user/.local/bin' which is not on PATH.
+   ```
+   You must add root directory path of these library. For example: 
+   
+   ```
+   export PATH=$PATH:/home/user/.local/bin
+   ```
 ### Install TorchServe for development at [here](https://github.com/pytorch/serve#install-torchserve-for-development)
  
 ## II. Serve a model
@@ -392,14 +404,55 @@ $ git clone https://github.com/congdaoduy298/TorchServe.git
 $ cd TorchServe/yolov5_torchserve 
 ```
 
-3. Clone lastest version of yolov5 repository.
+3. Clone lastest version of yolov5 repository and install all requirements.
 
 ```bash
 $ git clone https://github.com/ultralytics/yolov5
 $ cd yolov5
 $ pip install -r requirements.txt
 ```
-4. 
+
+4. Convert the eager yolov5 model to the script model:
+
+```bash
+$ cd ..
+```
+
+```bash
+$ python3 yolov5/export.py --weights yolov5s.pt --img 640 --batch 1
+```
+Now, we can see a yolov5s.torchscript.pt has been created in yolov5_torchserve folder.
+
+5. Archive the model by using the model archiver.
+
+ Create model_store to save archived model. 
+ 
+```bash
+$ mkdir model_store 
+```
+```bash
+torch-model-archiver --model-name yolov5s     --version 0.1 --serialized-file yolov5s.torchscript.pt     --export-path model_store --handler torchserve_handler.py     --extra-files index_to_name.json -f
+```
+yolov5s.mar will be exported in model_store folder.
+
+6. Start TorchServe to serve the model
+  
+  Before we start TorchServe, try to add yolov5 path to PYTHONPATH. It makes us can import all codes in yolov5 (In this case, I use letterbox function from utils.datasets).
+  
+  ```bash
+  export PYTHONPATH=$PYTHONPATH:/[YOUR PATH TO YOLOV5] 
+  ``` 
+  Example:
+  
+   ```bash
+  export PYTHONPATH=$PYTHONPATH://home/congdao/user/TorchServe/yolov5_torchserve/yolov5 
+  ``` 
+  
+  Start TorchServe
+  ```bash
+  $ torchserve --start --ncs --model-store model_store --models yolov5s
+  ```
+
 
 ## VII. REFERENCES
 
