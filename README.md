@@ -89,13 +89,12 @@ $ git clone https://github.com/pytorch/serve.git
    ```
    [Here](https://github.com/pytorch/serve/blob/master/model-archiver/README.md) for more informations about arguments.
    
-   ##### Note: Pytorch model include 2 mode: eager mode and script mode. To know more about mode in Pytorch click [here]()
+   ##### Note: Pytorch model include 2 mode: eager mode and script mode. To know more about mode in Pytorch click [here](#5-convert-to-script-mode)
   
   #### 1.5 Start TorchServe to serve the model
   
   The defaul port of Inference REST API - 8080, Management REST API - 8081, Metrics REST API - 8082.
-  
-                     Inference gRPC API - 7070, Management gRPC API - 7071.
+  Inference gRPC API - 7070, Management gRPC API - 7071.
                      
   In my case, port 7070 is already used by AnyDesk. So I have to configure gRPC port:
   
