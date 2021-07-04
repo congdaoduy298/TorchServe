@@ -52,7 +52,7 @@ $ git clone https://github.com/pytorch/serve.git
    ```
    
    #### NOTE: 
-   If this command raise a warning that these library is not in PATH looks like the following warning. 
+   If this command raise a warning that these libraries is not in PATH looks like the following warning. 
    
    ```
    WARNING: The script torchserve is installed in '/home/user/.local/bin' which is not on PATH.
@@ -94,6 +94,7 @@ $ git clone https://github.com/pytorch/serve.git
   #### 1.5 Start TorchServe to serve the model
   
   The defaul port of Inference REST API - 8080, Management REST API - 8081, Metrics REST API - 8082.
+  
                      Inference gRPC API - 7070, Management gRPC API - 7071.
                      
   In my case, port 7070 is already used by AnyDesk. So I have to configure gRPC port:
@@ -132,7 +133,7 @@ $ git clone https://github.com/pytorch/serve.git
    - Run inference using a sample client [gRPC python client](https://github.com/pytorch/serve/blob/master/ts_scripts/torchserve_grpc_client.py)
    
      ##### Note: 
-     Remember to [Start TorchServe](#15-start-torchserve-to-serve-the-model) before running this command. Change inference port from 7070 to 8888 if you set *grpc_inference_port=8888* in line 9 of *torchserve_grpc_client.py*.
+     Remember to [Start TorchServe](#15-start-torchserve-to-serve-the-model) before running this command. Change inference port from 7070 to 8888 if you set *grpc_inference_port=8888* in line 10 of *torchserve_grpc_client.py*.
    
      ```bash
      $ python ts_scripts/torchserve_grpc_client.py infer densenet161 examples/image_classifier/kitten.jpg
