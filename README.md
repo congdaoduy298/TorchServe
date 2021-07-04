@@ -9,14 +9,15 @@ For Windows follow the document from [torchserve](https://github.com/pytorch/ser
 * [Install TorchServe](#installation)
 * [Serve a Model](#serve-a-model)
 * [Logging and Monitoring](#logging-and-monitoring)
-* [Convert to Script Mode] (#convert-to-script-mode)
-* [Serve YOLOv5 Model] (#serve-yolov5-model)
-* [References] (#references)
+* [Metrics](#metrics)
+* [Convert to Script Mode](#convert-to-script-mode)
+* [Serve YOLOv5 Model](#serve-yolov5-model)
+* [References](#references)
 
 ## I. Installation
  1. Clone TorchServe repository
 ```shell
-git clone https://github.com/pytorch/serve.git
+$ git clone https://github.com/pytorch/serve.git
 ```
  2. Install all dependencies:
  
@@ -25,29 +26,29 @@ git clone https://github.com/pytorch/serve.git
    - Change to *serve* directory
      
      ```bash
-     cd serve
+     $ cd serve
      ```       
     
    - For CPU
 
         ```bash
-        python ./ts_scripts/install_dependencies.py
+        $ python ./ts_scripts/install_dependencies.py
         ```
         
    - For GPU with Cuda 10.2. Options are `cu92`, `cu101`, `cu102`, `cu111`
 
        ```bash
-       python ./ts_scripts/install_dependencies.py --cuda=cu102
+       $ python ./ts_scripts/install_dependencies.py --cuda=cu102
        ```
  3. Install torchserve, torch-model-archiver and torch-workflow-archiver
    For Conda
    ```
-   conda install torchserve torch-model-archiver torch-workflow-archiver -c pytorch
+   $ conda install torchserve torch-model-archiver torch-workflow-archiver -c pytorch
    ```
    
    For Pip
    ```
-   pip install torchserve torch-model-archiver torch-workflow-archiver
+   $ pip install torchserve torch-model-archiver torch-workflow-archiver
    ```
 ### Install TorchServe for development at [here](https://github.com/pytorch/serve#install-torchserve-for-development)
  
@@ -56,22 +57,22 @@ git clone https://github.com/pytorch/serve.git
    ##### 1.1 Change to the parent directory of the *serve* directory
    
    ```bash
-   cd ..
+   $ cd ..
    ```
    ##### 1.2 Create a folder to store your models
    
    ```bash
-   mkdir model_store
+   $ mkdir model_store
    ```
    ##### 1.3 Download a trained model
    
    ```bash
-    wget https://download.pytorch.org/models/densenet161-8d451a50.pth
+   $ wget https://download.pytorch.org/models/densenet161-8d451a50.pth
    ```
    ##### 1.4 Archive the model by using the model archiver.
    
    ```bash
-    torch-model-archiver --model-name densenet161 --version 1.0 --model-file ./serve/examples/image_classifier/densenet_161/model.py --serialized-file densenet161-8d451a50.pth --export-path model_store --extra-files ./serve/examples/image_classifier/index_to_name.json --handler image_classifier
+   $ torch-model-archiver --model-name densenet161 --version 1.0 --model-file ./serve/examples/image_classifier/densenet_161/model.py --serialized-file densenet161-8d451a50.pth --export-path model_store --extra-files ./serve/examples/image_classifier/index_to_name.json --handler image_classifier
 
    ```
    [Here](https://github.com/pytorch/serve/blob/master/model-archiver/README.md) for more informations about arguments.
@@ -80,8 +81,8 @@ git clone https://github.com/pytorch/serve.git
   
   ##### 1.5 Start TorchServe to serve the model
   ```bash
-    torchserve --start --ncs --model-store model_store --models densenet161.mar
-   ```
+  $ torchserve --start --ncs --model-store model_store --models densenet161.mar
+  ```
   ##### 1.6 Get predictions from a model
   
   1.6.1 Using GRPC APIs through python client
@@ -89,17 +90,17 @@ git clone https://github.com/pytorch/serve.git
    - Install grpc python dependencies :
    
      ```bash
-     pip install -U grpcio protobuf grpcio-tools
+     $ pip install -U grpcio protobuf grpcio-tools
      ```
    - Change directory to the *serve* directory :
    
      ```bash
-     cd serve
+     $ cd serve
      ```
    - Generate inference client using proto files
    
      ```bash
-     python -m grpc_tools.protoc --proto_path=frontend/server/src/main/resources/proto/ --python_out=ts_scripts --grpc_python_out=ts_scripts   
+     $ python -m grpc_tools.protoc --proto_path=frontend/server/src/main/resources/proto/ --python_out=ts_scripts --grpc_python_out=ts_scripts   
      frontend/server/src/main/resources/proto/inference.proto frontend/server/src/main/resources/proto/management.proto
      ```
    - Run inference using a sample client [gRPC python client](https://github.com/pytorch/serve/blob/master/ts_scripts/torchserve_grpc_client.py)
@@ -107,7 +108,7 @@ git clone https://github.com/pytorch/serve.git
      Note: Remember to [Start TorchServe](#15-start-torchserve-to-serve-the-model) before running this command. 
    
      ```bash
-     python ts_scripts/torchserve_grpc_client.py infer densenet161 examples/image_classifier/kitten.jpg
+     $ python ts_scripts/torchserve_grpc_client.py infer densenet161 examples/image_classifier/kitten.jpg
      ```
   1.6.2 Using REST APIs
   
@@ -116,18 +117,18 @@ git clone https://github.com/pytorch/serve.git
      ![kitten](https://github.com/pytorch/serve/blob/master/docs/images/kitten_small.jpg)
      
      ```bash
-     curl -O https://raw.githubusercontent.com/pytorch/serve/master/docs/images/kitten_small.jpg
+     $ curl -O https://raw.githubusercontent.com/pytorch/serve/master/docs/images/kitten_small.jpg
      ```
    - The first way, we can use terminal to get prediction:
    
      ```bash
-     curl http://127.0.0.1:8080/predictions/densenet161 -T kitten_small.jpg
+     $ curl http://127.0.0.1:8080/predictions/densenet161 -T kitten_small.jpg
      ```
    
    - The other way, we implement [a python script](send_request.py) to get a prediction:
    
      ```bash
-     python send_request.py
+     $ python send_request.py
      ```
    
  ##### 1.7 Deploy multi model
@@ -139,7 +140,7 @@ git clone https://github.com/pytorch/serve.git
    ###### FOR gRPC API
     
    ```bash
-     python ts_scripts/torchserve_grpc_client.py register squeezenet1_1
+   $ python ts_scripts/torchserve_grpc_client.py register squeezenet1_1
    ```
    By example code we only can use some pretrained model. 
    
@@ -150,19 +151,19 @@ git clone https://github.com/pytorch/serve.git
    Example: If we have a *squeezenet1_1.mar* in *model_store*. Use this following code: 
    
    ```bash
-   curl -v -X POST "http://localhost:8081/models?initial_workers=1&url=squeezenet1_1.mar"
+   $ curl -v -X POST "http://localhost:8081/models?initial_workers=1&url=squeezenet1_1.mar"
    ```
   
   Or you can download a pretrained model from Torch Serve.
   
   ```bash
-  curl -v -X POST "http://localhost:8081/models?initial_workers=1&url=https://torchserve.pytorch.org/mar_files/squeezenet1_1.mar"
+  $ curl -v -X POST "http://localhost:8081/models?initial_workers=1&url=https://torchserve.pytorch.org/mar_files/squeezenet1_1.mar"
   ```
   
   If you want to update a new version of model (example version 1.1):
   
   ```bash
-  curl -v -X POST "http://localhost:8081/models?initial_workers=1&url=squeezenet1_1.mar/1.1"
+  $ curl -v -X POST "http://localhost:8081/models?initial_workers=1&url=squeezenet1_1.mar/1.1"
   ```
   
 
@@ -207,12 +208,12 @@ git clone https://github.com/pytorch/serve.git
    ###### FOR gRPC API
     
    ```bash
-     python ts_scripts/torchserve_grpc_client.py unregister squeezenet1_1
+   $ python ts_scripts/torchserve_grpc_client.py unregister squeezenet1_1
    ```
    ###### FOR REST API
 
    ```bash
-   curl -X DELETE http://localhost:8081/models/squeezenet1_1/1.0
+   $ curl -X DELETE http://localhost:8081/models/squeezenet1_1/1.0
    ```
  
 ##### Add multiple models by torchserve command
@@ -220,7 +221,7 @@ git clone https://github.com/pytorch/serve.git
   Use torchsever --stop if the server is running. After that run this command.
   
   ```
-  torchserve --start --ncs --model-store model_store --models model1 model2 
+  $ torchserve --start --ncs --model-store model_store --models model1 model2 
   ```
 ###### Arguments
 
@@ -250,7 +251,7 @@ git clone https://github.com/pytorch/serve.git
             model1=model1.mar, model2=model2.mar: Load models with the specified names and MAR files from model_store.
   ```
   
-## III. Logging and Monitoring
+## III. LOGGING AND MONITORING
 
 #### Types of logs
 
@@ -323,7 +324,7 @@ Types of metrics
  
  [Here](https://pytorch.org/serve/metrics.html#custom-metrics-api) for more informations about custom metrics.
 
-### IV.CONVERT TO SCRIPT MODE
+## V.CONVERT TO SCRIPT MODE
   
   
   A PyTorch model has two mode. There are Eager Mode and Script Mode. 
@@ -371,10 +372,36 @@ Pass instance of your model to torch.jit.script().
 
  Try to use torch.jit.trace and torch.jit.script  [here](https://colab.research.google.com/drive/1ihTRSsu6e33sU3m_WZ7YtB9MPjUaCLtA?usp=sharing).
 
-### V.SERVE YOLOv5 MODEL
+## VI. SERVE YOLOv5 MODEL
 
+I am going to test on pretrained yolov5s.
 
-### VI.REFERENCES
+Don't foget to install [Torch Serve](#installation) first.
+
+1. Clone this repo: 
+
+- Clone this repo to get Yolov5 weights and file index_to_nam.json and torchserve_handler.py (This python file controls preprocessing, passes Tensor through model and get predictions).
+
+```bash
+$ git clone https://github.com/congdaoduy298/TorchServe.git
+```
+
+2. Change current directory to yolov5_torchserve:
+
+```bash
+$ cd TorchServe/yolov5_torchserve 
+```
+
+3. Clone lastest version of yolov5 repository.
+
+```bash
+$ git clone https://github.com/ultralytics/yolov5
+$ cd yolov5
+$ pip install -r requirements.txt
+```
+4. 
+
+## VII. REFERENCES
 
  [TorchServe, công cụ hỗ trợ triển khai mô hình PyTorch.](https://viblo.asia/p/torchserve-cong-cu-ho-tro-trien-khai-mo-hinh-pytorch-vyDZOqwO5wj)
  
