@@ -61,7 +61,7 @@ Follow the flow of get predictions from yolov5 model. Try to read `detect.py` fi
 
 - At prediction stage, the yolov5 progress will follow these steps:
     
-    ```
+    ```python
         img0 = cv2.imread(path)  # BGR
         # Padded resize
         img = letterbox(img0, self.img_size, stride=self.stride)[0]
