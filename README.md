@@ -141,12 +141,12 @@ $ git clone https://github.com/pytorch/serve.git
      frontend/server/src/main/resources/proto/inference.proto frontend/server/src/main/resources/proto/management.proto
      ```
      
-     This command will create 4 python files: *inference_pb2.py, inference_pb2_grpc.py, management_pb2.py, management_pb2_grpc.py* depend on *grpc_tools.protoc* file.
+     This command will create 4 python files: `inference_pb2.py`, `inference_pb2_grpc.py`, `management_pb2.py`, `management_pb2_grpc.py` depend on `grpc_tools.protoc` file.
      
    - Run inference using a sample client [gRPC python client](https://github.com/pytorch/serve/blob/master/ts_scripts/torchserve_grpc_client.py)
    
      ##### Note: 
-     Remember to [Start TorchServe](#15-start-torchserve-to-serve-the-model) before running this command. Change inference port from 7070 to 8888 if you set *grpc_inference_port=8888* in line 10 of *torchserve_grpc_client.py*.
+     Remember to [Start TorchServe](#15-start-torchserve-to-serve-the-model) before running this command. Change inference port from 7070 to 8888 if you set *grpc_inference_port=8888* in line 10 of `torchserve_grpc_client.py`.
    
      ```bash
      $ python ts_scripts/torchserve_grpc_client.py infer densenet161 examples/image_classifier/kitten.jpg
@@ -313,7 +313,7 @@ TorchServe currently provides the following types of logs
 
 ### 1.Access Logs:
 
-- When you load TorchServe with a model and run inference against the server, the following logs are collected into the access_log.log:
+- When you load TorchServe with a model and run inference against the server, the following logs are collected into the `access_log.log`:
 
   ```
    2018-10-15 13:56:18,976 [INFO ] BackendWorker-9000 ACCESS_LOG - /127.0.0.1:64003 "POST /predictions/resnet-18 HTTP/1.1" 200 118
@@ -325,7 +325,7 @@ TorchServe currently provides the following types of logs
 
 - These logs collect all the logs from TorchServe and from the backend workers (the custom model code).
 
-The following logs are collected into the ts_log.log (We load 2 worker for model *my_model_name*):
+The following logs are collected into the `ts_log.log` (We load 2 worker for model *my_model_name*):
 
 ``` 
 2021-07-02 13:04:51,816 [DEBUG] W-9000-my_model_name_0.1 org.pytorch.serve.wlm.WorkerThread - W-9000-my_model_name_0.1 State change WORKER_STARTED -> WORKER_MODEL_LOADED
@@ -337,7 +337,7 @@ The following logs are collected into the ts_log.log (We load 2 worker for model
 
 ### 3.Model Logs:
 
-- To debug your python code or model load failed, we can check logs from model_log.log. Example: 
+- To debug your python code or model load failed, we can check logs from `model_log.log`. Example: 
    ```
     2021-06-29 22:55:24,443 [INFO ] W-9003-my_model_name_1_0.1-stdout MODEL_LOG -   File "/home/congdao/Desktop/TorchServe-REST/yolov5_torchserve_v2/yolov5  /torchserve_handler.py", line 4, in <module>
     2021-06-29 22:55:24,444 [INFO ] W-9003-my_model_name_1_0.1-stdout MODEL_LOG -     from utils2.datasets import letterbox
@@ -346,9 +346,9 @@ The following logs are collected into the ts_log.log (We load 2 worker for model
     
 #### Note: 
 
- - If you want to fix bugs from model, you just have to care about *model_log.log* file. Or if you want to check connections from requests to server, you only care about *access_log.log*.  
+ - If you want to fix bugs from model, you just have to care about `model_log.log` file. Or if you want to check connections from requests to server, you only care about `access_log.log`.  
  
- - To debug python script, we can use *logging.warning* and these logs will be show on *model_log.log* file.
+ - To debug python script, we can use *logging.info* and these logs will be show on `model_log.log` file.
 
 ## IV. METRICS
 
@@ -362,7 +362,7 @@ Types of metrics
 
  ![Sytem Metrics](images/SystemMetrics.png)
  
- TorchServe emits metrics to log files by default. To enable JSON formatting for metrics, change the following line in log4j.properties:
+ TorchServe emits metrics to log files by default. To enable JSON formatting for metrics, change the following line in `log4j.properties`:
  
  ```bash
  log4j.appender.ts_metrics.layout = org.pytorch.serve.util.logging.JSONLayout
@@ -394,11 +394,11 @@ Types of metrics
   
    - Like the way we did before to [archive a model](#14-archive-the-model-by-using-the-model-archiver) in eager model we need to create a python file containing model architecture and pass through the --model-file argument. 
    
-   - To archive a custom model we need to save the model in script mode by using two methods: torch.jit.trace or torch.jit.script. 
+   - To archive a custom model we need to save the model in script mode by using two methods: *torch.jit.trace* or *torch.jit.script*. 
   
 ### 1. Tracing a model:
 
- The way to convert from eager mode to script mode by torch.jit.trace: 
+ The way to convert from eager mode to script mode by *torch.jit.trace*: 
  
  - Take an existing eager mode, and provide example inputs.
  
@@ -412,7 +412,7 @@ Types of metrics
  
 ### 2. Script a model:
 
-Pass instance of your model to torch.jit.script().
+Pass instance of your model to *torch.jit.script()*.
 
 - Control-flow is preserved.
 
@@ -420,7 +420,7 @@ Pass instance of your model to torch.jit.script().
 
 - Remove the script() call to debug as a standard PyTorch module.
 
- Try to use torch.jit.trace and torch.jit.script  [here](https://colab.research.google.com/drive/1ihTRSsu6e33sU3m_WZ7YtB9MPjUaCLtA?usp=sharing).
+ Try to use *torch.jit.trace* and *torch.jit.script* [here](https://colab.research.google.com/drive/1ihTRSsu6e33sU3m_WZ7YtB9MPjUaCLtA?usp=sharing).
 
 ## VI. SERVE YOLOv5 MODEL
 
@@ -430,7 +430,7 @@ Don't foget to install [Torch Serve](#installation) first.
 
 ### 1. Clone this repo: 
 
-- Clone this repo to get Yolov5 weights and file index_to_name.json and torchserve_handler.py (This python file controls preprocessing, passes Tensor through model and get predictions).
+- Clone this repo to get Yolov5 weights and file `index_to_name.json` and `torchserve_handler.py` (This python file controls preprocessing, passes Tensor through model and get predictions).
 
 ```bash
 $ git clone https://github.com/congdaoduy298/TorchServe.git
@@ -459,11 +459,11 @@ $ cd ..
 ```bash
 $ python3 yolov5/export.py --weights yolov5s.pt --img 640 --batch 1
 ```
-Now, we can see a yolov5s.torchscript.pt has been created in yolov5_torchserve folder.
+Now, we can see a `yolov5s.torchscript.pt` has been created in `yolov5_torchserve` folder.
 
 ### 5. Archive the model by using the model archiver.
 
- Create model_store to save archived model. 
+ Create *model_store* to save archived model. 
  
 ```bash
 $ mkdir model_store 
@@ -472,11 +472,11 @@ $ mkdir model_store
 ```bash
 torch-model-archiver --model-name yolov5s     --version 0.1 --serialized-file yolov5s.torchscript.pt     --export-path model_store --handler torchserve_handler.py     --extra-files index_to_name.json -f
 ```
-yolov5s.mar will be exported in model_store folder.
+`yolov5s.mar` will be exported in *model_store* folder.
 
 ### 6. Start TorchServe to serve the model and get predictions.
   
-  Before we start TorchServe, try to add yolov5 path to PYTHONPATH. It makes us can import all codes in yolov5 (In this case, I use letterbox function from utils.datasets).
+  Before we start TorchServe, try to add yolov5 path to PYTHONPATH. It makes us can import all codes in yolov5 (In this case, I use `letterbox` function from `utils.datasets`).
   
   ```bash
   $ export PYTHONPATH=$PYTHONPATH:/[YOUR PATH TO YOLOV5] 
@@ -510,7 +510,7 @@ grpc_inference_port=8888
 grpc_management_port=9999
 ```
 
-Save to config.properties in /home/my_path if you cloned the repository into /home/my_path/serve.
+Save to `config.properties` in where you call `torchserve`.
 
 ### 2. Fix ServiceUnavailableException 503 access logging.
 
@@ -518,11 +518,11 @@ It happens when the server is busy. Worker has tasks to do.
 
 Increase job queue size. 
 
-In file *config.properties* we add job_queue_size=num_job.
+In file `config.properties` we add *job_queue_size=num_job*.
 
-Example: job_queue_size = 100 (add maximum 100 jobs in queue when server is busy).
+Example: *job_queue_size = 100* (add maximum 100 jobs in queue when server is busy).
 
-=> Maximum number of task at a specific time = default_workers_per_model + job_queue_size
+=> Maximum number of task at a specific time = *default_workers_per_model* + *job_queue_size*
 
 ### 3. Fix Internal Server Error 500 access logging.
 
@@ -530,7 +530,7 @@ It means Response Time Out. The way to solve this problem:
 
 Solution: Set bigger value for respone time out.
     
-Example: default_response_timeout = 180 (Default 120s)
+Example: *default_response_timeout = 180* (Default 120s)
 
 ## VIII. REFERENCES
 
