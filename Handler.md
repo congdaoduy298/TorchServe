@@ -21,7 +21,7 @@ You can see this file [here](https://github.com/pytorch/serve/blob/master/ts/tor
 
 * Description : Handles image segmentation models trained on the ImageNet dataset.
 * Input : RGB image
-* Output : Output shape as [N, CL H W], N - batch size, CL - number of classes, H - height and W - width.
+* Output : Output shape as [N, CL, H, W], N - batch size, CL - number of classes, H - height and W - width.
 
 You can see this file [here](https://github.com/pytorch/serve/blob/master/ts/torch_handler/image_segmenter.py)
 
