@@ -430,7 +430,7 @@ Don't foget to install [Torch Serve](#installation) first.
 
 ### 1. Clone this repo: 
 
-- Clone this repo to get Yolov5 weights and file `index_to_name.json` and `torchserve_handler.py` (This python file controls preprocessing, passes Tensor through model and get predictions).
+- Clone this repo to get Yolov5 weights and file `index_to_name.json` and `torchserve_handler.py`. See more [How to write a handler file ?](Handler.md).
 
 ```bash
 $ git clone https://github.com/congdaoduy298/TorchServe.git
