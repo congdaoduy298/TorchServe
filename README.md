@@ -94,7 +94,11 @@ $ git clone https://github.com/pytorch/serve.git
    ```
    [Here](https://github.com/pytorch/serve/blob/master/model-archiver/README.md) for more informations about arguments.
    
-  See more [How to write a handler file?](Handler.md).
+  #### NOTE: 
+
+   - Handler file controls preprocessing data, passes data through model and gets the predictions.
+
+   - You can create your own handler. See more [How to write a handler file?](Handler.md).
   
   #### 1.5 Start TorchServe to serve the model
   
@@ -431,7 +435,7 @@ Don't foget to install [Torch Serve](#installation) first.
 
 ### 1. Clone this repo: 
 
-- Clone this repo to get Yolov5 weights, `index_to_name.json`, and `torchserve_handler.py`. See more [How to write a handler file?](Handler.md).
+- Clone this repo to get Yolov5 weights, `index_to_name.json`, and `torchserve_handler.py`.
 
 ```bash
 $ git clone https://github.com/congdaoduy298/TorchServe.git
@@ -460,7 +464,7 @@ $ cd ..
 ```bash
 $ python3 yolov5/export.py --weights yolov5s.pt --img 640 --batch 1
 ```
-Now, we can see a `yolov5s.torchscript.pt` has been created in `yolov5_torchserve` folder.
+We can see a `yolov5s.torchscript.pt` has been created in `yolov5_torchserve` folder.
 
 ### 5. Archive the model by using the model archiver.
 
@@ -473,7 +477,14 @@ $ mkdir model_store
 ```bash
 torch-model-archiver --model-name yolov5s     --version 0.1 --serialized-file yolov5s.torchscript.pt     --export-path model_store --handler torchserve_handler.py     --extra-files index_to_name.json -f
 ```
-`yolov5s.mar` will be exported in *model_store* folder.
+
+#### NOTE: 
+
+- Handler file controls preprocessing data, passes data through model and gets the predictions.
+
+- You can create your own handler. See more [How to write a handler file?](Handler.md).
+
+Now, `yolov5s.mar` will be exported in *model_store* folder.
 
 ### 6. Start TorchServe to serve the model and get predictions.
   
