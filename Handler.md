@@ -55,7 +55,7 @@ To read more from [TorchServe Github](https://github.com/pytorch/serve/blob/mast
 
 I am going to write a yolov5 custom handler.
 
-Just like the `ImageClassifier`, `ImageSegmenter` ,and `ObjectDetector` classes. To write a image handler, `ModelHandler` inherits of `Base_Handler` class. We have to write *preprocess* method and *postprocess* method.  
+Just like the `ImageClassifier`, `ImageSegmenter` ,and `ObjectDetector` classes. To write a image handler, `ModelHandler` inherits of `Base_Handler` class. We have to write `preprocess` method and `postprocess` method.  
 
 Follow the flow of get predictions from yolov5 model. Try to read `detect.py` file to get the flow.
 
@@ -78,17 +78,17 @@ Follow the flow of get predictions from yolov5 model. Try to read `detect.py` fi
         pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
     ```
 
-(*LoadImages* class from `utils/datasets.py` and from file `detect.py`)
+(`LoadImages` class from `utils/datasets.py` and from file `detect.py`)
 
-You can see how *letterbox* work [here](https://github.com/AlexeyAB/darknet/issues/232#issuecomment-336955485). But in this case *letterbox* only scale image to keep ratio and resize image by adding padding 0. 
+You can see how `letterbox` work [here](https://github.com/AlexeyAB/darknet/issues/232#issuecomment-336955485). But in this case `letterbox` only scale image to keep ratio and resize image by adding padding 0. 
 
 - Example: image 1280x720 will be resized to 416x234. Not 416X416
 
 So we can write preprocess method and postprocess base on these above steps.
 
-In *preprocess* method (Take the input data and make it inference ready):
+In `preprocess` method (Take the input data and make it inference ready):
     
-You can see, raw data is sent from client will pass to *preprocess*.
+You can see, raw data is sent from client will pass to `preprocess`.
 
 ```python
 def preprocess(self, data):
@@ -119,14 +119,14 @@ if input.ndimension() == 3:
 # inputs[i, :, :, :] = input
 ```
 
-In *postprocess* method (Return inference result.):
+In `postprocess` method (Return inference result.):
 
-After *preprocess*, data will pass to model by *inference*pass method that inherits from `BaseHandler`.
+After `preprocess`, data will pass to model by `inference` method that inherits from `BaseHandler`.
 
 ```python
 def postprocess(self, inference_output):
 ```
-Input of postprocess is the result of inference. That can be considered as step `pred = model(img)` in yolov5 prediction stage.
+Input of `postprocess` is the result of `inference`. That can be considered as step `pred = model(img)` in yolov5 prediction stage.
 
 So we need to apply non-max suppression on the result. And convert the result of NMS to list.
 
