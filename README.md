@@ -58,7 +58,7 @@ $ git clone https://github.com/pytorch/serve.git
    ```
    WARNING: The script torchserve is installed in '/home/user/.local/bin' which is not on PATH.
    ```
-   You must add root directory path of these library. For example: 
+   You must add root directory path of these libraries. For example: 
    
    ```
    export PATH=$PATH:/home/user/.local/bin
@@ -82,6 +82,9 @@ $ git clone https://github.com/pytorch/serve.git
    ```bash
    $ wget https://download.pytorch.org/models/densenet161-8d451a50.pth
    ```
+   
+   ##### Note: Pytorch model include 2 mode: eager mode and script mode. To know more about mode in Pytorch click [here](#5-convert-to-script-mode)
+   
    #### 1.4 Archive the model by using the model archiver.
    
    ```bash
@@ -90,26 +93,32 @@ $ git clone https://github.com/pytorch/serve.git
    ```
    [Here](https://github.com/pytorch/serve/blob/master/model-archiver/README.md) for more informations about arguments.
    
-   ##### Note: Pytorch model include 2 mode: eager mode and script mode. To know more about mode in Pytorch click [here](#5-convert-to-script-mode)
   
   #### 1.5 Start TorchServe to serve the model
   
-  The defaul port of Inference REST API - 8080, Management REST API - 8081, Metrics REST API - 8082.
-  Inference gRPC API - 7070, Management gRPC API - 7071.
-                     
-  In my case, port 7070 is already used by AnyDesk. So I have to configure gRPC port:
+  1.5.1 Configure properties:
   
-  ```bash
-  $ echo "grpc_inference_port=8888" > config.properties
-  ```
+   The defaul port of Inference REST API - 8080, Management REST API - 8081, Metrics REST API - 8082.
+   Inference gRPC API - 7070, Management gRPC API - 7071.
+
+   In my case, port 7070 is already used by AnyDesk. So I have to configure gRPC port:
+
+   ```bash
+   $ echo "grpc_inference_port=8888" > config.properties
+   ```
+
+   Torch Serve will load configurations from file config.properties where you run *tochserve*.
+
+   For more [Advanced Configuration](Advanced_Configuration.md)
   
-  Torch Serve will load configurations from file config.properties where you run tochserve.
-  
-  For more [Advanced Configuration](Advanced_Configuration.md)
+  1.5.2 Start TorchServe:
   
   ```bash
   $ torchserve --start --ncs --model-store model_store --models densenet161.mar
   ```
+  
+  After you execute the torchserve command above, TorchServe runs on your host, listening for inference requests.
+  
   #### 1.6 Get predictions from a model
   
   1.6.1 Using GRPC APIs through python client
@@ -124,12 +133,15 @@ $ git clone https://github.com/pytorch/serve.git
      ```bash
      $ cd serve
      ```
-   - Generate inference client using proto files
+   - Generate inference client using proto files 
    
      ```bash
      $ python -m grpc_tools.protoc --proto_path=frontend/server/src/main/resources/proto/ --python_out=ts_scripts --grpc_python_out=ts_scripts   
      frontend/server/src/main/resources/proto/inference.proto frontend/server/src/main/resources/proto/management.proto
      ```
+     
+     This command will create 4 python files: *inference_pb2.py, inference_pb2_grpc.py, management_pb2.py, management_pb2_grpc.py* depend on *grpc_tools.protoc* file.
+     
    - Run inference using a sample client [gRPC python client](https://github.com/pytorch/serve/blob/master/ts_scripts/torchserve_grpc_client.py)
    
      ##### Note: 
@@ -138,6 +150,15 @@ $ git clone https://github.com/pytorch/serve.git
      ```bash
      $ python ts_scripts/torchserve_grpc_client.py infer densenet161 examples/image_classifier/kitten.jpg
      ```
+     
+     ##### Arguments:
+     
+      - 1-> api name [infer, register, unregister]
+      
+      - 2-> model name
+      
+      - 3-> model input for prediction
+      
   1.6.2 Using REST APIs
   
    - Download an image to test the model server (you also can use your own data).
