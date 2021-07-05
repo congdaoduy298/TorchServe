@@ -57,9 +57,11 @@ I am going to write a yolov5 custom handler.
 
 Just like the `ImageClassifier`, `ImageSegmenter` ,and `ObjectDetector` classes. To write a image handler, `ModelHandler` inherits of `Base_Handler` class. We have to write `preprocess` method and `postprocess` method.  
 
-Follow the flow of get predictions from yolov5 model. Try to read `detect.py` file to get the flow.
+### 1. Prediction Stage
 
-- At prediction stage, the yolov5 progress will follow these steps:
+Follow the flow of getting predictions from the yolov5 model. 
+
+- At prediction stage, yolov5 will follow these steps:
     
     ```python
         img0 = cv2.imread(path)  # BGR
@@ -82,9 +84,15 @@ Follow the flow of get predictions from yolov5 model. Try to read `detect.py` fi
 
 You can see how `letterbox` work [here](https://github.com/AlexeyAB/darknet/issues/232#issuecomment-336955485). But in this case `letterbox` only scale image to keep ratio and resize image by adding padding 0. 
 
-- Example: image 1280x720 will be resized to 416x234. Not 416X416
+- Example: image 1280x720 will be resized to 416x234. Not 416X416.
 
 So we can write preprocess method and postprocess base on these above steps.
+
+### 2.Write Handler File
+
+Now we can write a custom handler base on the prediction stage. *You should generally derive from BaseHandler and ONLY override methods whose behavior needs to change!* As you can see in the examples, most of the time you only need to override `preprocess` or `postprocess`.
+
+#### 2.1 Preprocess 
 
 In `preprocess` method (Take the input data and make it inference ready):
     
@@ -118,6 +126,7 @@ if input.ndimension() == 3:
 # Do this if you want to predict on a batch.
 # inputs[i, :, :, :] = input
 ```
+#### 2.2 Postprocess
 
 In `postprocess` method (Return inference result.):
 
@@ -136,6 +145,8 @@ pred = non_max_suppression(postprocess_output[0], conf_thres=0.2)
 pred = [p.tolist() for p in pred]
 return [pred]
 ```
+
+More informations about [create a custom handler](https://github.com/pytorch/serve/blob/master/docs/custom_service.md#advanced-custom-handlers).
 
 ### NOTE: 
 
