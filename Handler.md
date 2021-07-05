@@ -65,7 +65,6 @@ Follow the flow of get predictions from yolov5 model. Try to read `detect.py` fi
         img0 = cv2.imread(path)  # BGR
         # Padded resize
         img = letterbox(img0, self.img_size, stride=self.stride)[0]
-
         # Convert
         img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB and HWC to CHW
         img = np.ascontiguousarray(img)
@@ -79,7 +78,7 @@ Follow the flow of get predictions from yolov5 model. Try to read `detect.py` fi
         pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
     ```
 
-(line 212 - 223 from `utils/datasets.py` and line 93 - 104 from file `detect.py`)
+(*LoadImages* class from `utils/datasets.py` and from file `detect.py`)
 
 You can see how *letterbox* work [here](https://github.com/AlexeyAB/darknet/issues/232#issuecomment-336955485). But in this case *letterbox* only scale image to keep ratio and resize image by adding padding 0. 
 
