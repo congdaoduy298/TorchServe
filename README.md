@@ -42,6 +42,7 @@ $ git clone https://github.com/pytorch/serve.git
        $ python ./ts_scripts/install_dependencies.py --cuda=cu102
        ```
  3. Install torchserve, torch-model-archiver and torch-workflow-archiver
+ 
    For Conda
    ```
    $ conda install torchserve torch-model-archiver torch-workflow-archiver -c pytorch
