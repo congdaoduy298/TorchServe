@@ -94,6 +94,7 @@ $ git clone https://github.com/pytorch/serve.git
    ```
    [Here](https://github.com/pytorch/serve/blob/master/model-archiver/README.md) for more informations about arguments.
    
+  See more [How to write a handler file?](Handler.md).
   
   #### 1.5 Start TorchServe to serve the model
   
@@ -430,7 +431,7 @@ Don't foget to install [Torch Serve](#installation) first.
 
 ### 1. Clone this repo: 
 
-- Clone this repo to get Yolov5 weights and file `index_to_name.json` and `torchserve_handler.py`. See more [How to write a handler file ?](Handler.md).
+- Clone this repo to get Yolov5 weights, `index_to_name.json`, and `torchserve_handler.py`. See more [How to write a handler file?](Handler.md).
 
 ```bash
 $ git clone https://github.com/congdaoduy298/TorchServe.git
