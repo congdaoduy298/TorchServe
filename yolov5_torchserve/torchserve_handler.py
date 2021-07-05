@@ -1,7 +1,6 @@
 import time
 from ts.torch_handler.base_handler import BaseHandler
 from utils.datasets import letterbox
-from utils2.datasets import letterbox
 import numpy as np
 import torch
 import torchvision
@@ -40,8 +39,8 @@ class ModelHandler(BaseHandler):
                 file_bytes = np.asarray(bytearray(byte_array), dtype=np.uint8)
                 # yolov5 preprocessing
                 img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-                # img = letterbox(img, self.img_size, stride=self.stride)[0]
-                img = cv2.resize(img, (640, 480))
+                img = letterbox(img, self.img_size, stride=self.stride)[0]
+                img = padding_image(img, self.img_size, self.img_size)
                 img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
                 img = np.ascontiguousarray(img)
                 input = torch.from_numpy(img)
@@ -50,10 +49,9 @@ class ModelHandler(BaseHandler):
                 if input.ndimension() == 3:
                     input = input.unsqueeze(0)
                 # inputs[i, :, :, :] = input
-
                 return input
-            except:
-                pass
+            except Exception as err:
+                logging.info(err)
         return input
 
     def postprocess(self, inference_output):
@@ -68,6 +66,23 @@ class ModelHandler(BaseHandler):
         pred = [p.tolist() for p in pred]
         return [pred]
 
+def padding_image(img, width, height):
+    ht, wd, cc= img.shape
+
+    # create new image of desired size and color (blue) for padding
+    ww = width
+    hh = height
+    color = (0, 0, 0)
+    result = np.full((hh,ww,cc), color, dtype=np.uint8)
+
+    # compute center offset
+    xx = (ww - wd) // 2
+    yy = (hh - ht) // 2
+
+    # copy img image into center of result image
+    result[yy:yy+ht, xx:xx+wd] = img
+
+    return result 
 
 def non_max_suppression(prediction, conf_thres=0.5, iou_thres=0.6, classes=None, agnostic=False, labels=()):
     """
