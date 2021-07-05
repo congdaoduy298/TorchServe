@@ -96,7 +96,7 @@ $ git clone https://github.com/pytorch/serve.git
    
   #### NOTE: 
   
-   - *Handler file is extremely important.*
+   - *Handler file is extremely important and is specified by `--handler`.*
 
    - Handler file controls preprocessing data, passes data through model and gets the predictions.
 
@@ -482,7 +482,7 @@ torch-model-archiver --model-name yolov5s     --version 0.1 --serialized-file yo
 
 #### NOTE: 
 
-- *Handler file is extremely important.*
+- *Handler file is extremely important and is specified by `--handler`.*
 
 - Handler file controls preprocessing data, passes data through model and gets the predictions.
 
