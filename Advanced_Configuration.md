@@ -43,11 +43,11 @@ export PYTHONPATH=$PYTHONPATH:/home/user/Desktop/tmp_folder
 Customize TorchServe behavior by using the following command line arguments when you call torchserve:
 
 ```
-–ts-config : TorchServe loads the specified configuration file
-–model-store : Model folder path
-–models : Model name
-–log-config : Overrides the default log4j.properties. This file contains where you want to save access_log, ts_log, ts_metrics, model_log, model_metrics file and what is the maximum size of the files, etc .
-–foreground : Runs TorchServe in the foreground. 
+--ts-config : TorchServe loads the specified configuration file
+--model-store : Model folder path
+--models : Model name
+--log-config : Overrides the default log4j.properties. This file contains where you want to save access_log, ts_log, ts_metrics, model_log, model_metrics file and what is the maximum size of the files, etc .
+--foreground : Runs TorchServe in the foreground. 
 ```
 Example: 
 ```bash
