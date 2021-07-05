@@ -175,10 +175,10 @@ $ git clone https://github.com/pytorch/serve.git
      $ curl http://127.0.0.1:8080/predictions/densenet161 -T kitten_small.jpg
      ```
    
-   - The other way, we implement [a python script](send_request.py) to get a prediction:
+   - The other way, we implement [a python script](send_request.py) to get a prediction from an url:
    
      ```bash
-     $ python send_request.py
+     $ python send_request.pyurl
      ```
    
  #### 1.7 Deploy multi model
